@@ -5,7 +5,7 @@
 #include <vector>
 using namespace std;
 int SubsetSum(int , int, vector<int>);
-int MemoSubsetSum(int, int, vector<int>, vector< vector<int> >);
+int MemoSubsetSum(int, int, vector<int>, vector< vector<int> > &);
 
 int main(){
     string instance;
@@ -16,12 +16,14 @@ int main(){
         getline(f,instance);
         // first
         getline(f, instance);
-        // second
-        getline(f, instance);
-        // third
-        getline(f, instance);
-        // fouth
-        getline(f, instance);
+        // // second
+        // getline(f, instance);
+        // // third
+        // getline(f, instance);
+        // // fouth
+        // getline(f, instance);
+        // // fifth
+        // getline(f, instance);
         // read instances
             stringstream ss(instance);
             int target;
@@ -51,7 +53,7 @@ int SubsetSum(int t, int n, vector<int> data){
     return MemoSubsetSum(t, n, data, S);
 }
 
-int MemoSubsetSum(int t, int n, vector<int> data, vector< vector<int> > S){
+int MemoSubsetSum(int t, int n, vector<int> data, vector< vector<int> > &S){
     cout<<"Target: "<<t<<" Max: "<<n<<endl;
     for (std::vector<int>::const_iterator i = data.begin(); i != data.end(); ++i){
         std::cout << *i << ' ';
@@ -59,6 +61,7 @@ int MemoSubsetSum(int t, int n, vector<int> data, vector< vector<int> > S){
     cout<<endl;
     //return value stored in S if the cell is already filled int
     if(S[t][n] != -1){
+        cout<<"Read directly from array!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
         return S[t][n];
     }
     if(t == 0){
