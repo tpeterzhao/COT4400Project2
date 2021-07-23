@@ -4,78 +4,66 @@
 #include <sstream>
 #include <vector>
 using namespace std;
-int SubsetSum(int , int, vector<int>);
-int MemoSubsetSum(int, int, vector<int>, vector< vector<int> > &);
+int SubsetSum(int, int);
+int RecSubsetSum(int, int);
+
+int * S;
+int * entries;
+int length;
 
 int main(){
-    string instance;
+    string line;
     ifstream f("input.txt");
-
     if(f.is_open()){
-        // read first line of file that indicates the number of instance in the file
-        getline(f,instance);
-        // first
-        getline(f, instance);
-        // // second
-        // getline(f, instance);
-        // // third
-        // getline(f, instance);
-        // // fouth
-        // getline(f, instance);
-        // // fifth
-        // getline(f, instance);
-        // read instances
-            stringstream ss(instance);
+        // read first line of file
+        getline(f, line);
+
+        // read each instance
+        while(getline(f,line)){
+            // read target and max of each instance
             int target;
-            vector<int> arr;
-            // read each instance into an int vector
-            ss>>target;
             int max;
+            stringstream ss(line);
+            ss>>target;
             ss>>max;
-            int entry;
-            arr.push_back(0);
-            while(ss>>entry){
-                arr.push_back(entry);
-            }
-            // calculate the subset sum of the instance
             cout<<"Target: "<<target<<" Max: "<<max<<endl;
-            cout<<SubsetSum(target,max,arr)<<endl;
-        f.close();
+            length = max+1;
+            // read data of each instance
+            entries = new int[max+1];
+            for(int i=1; i<=max; i++){
+                ss>>entries[i];
+            }
+            cout<<SubsetSum(target,max)<<endl;
+        }
+    } else{
+        cout<<"File can not be opened."<<endl;
     }
-    else{
-        cout<<"can't open file...";
-    }
+    f.clear();
     return 0;
 }
 
-int SubsetSum(int t, int n, vector<int> data){
-    vector< vector<int> > S(t+1, vector<int> (n+1,-1));
-    return MemoSubsetSum(t, n, data, S);
+int SubsetSum(int t, int n){
+    // initialize 2d array to -1
+    S = new int[(t+1)*(n+1)];
+    memset(S, 0, (t+1)*(n+1)*sizeof(int));
+    // calculate subsum recursively
+    return RecSubsetSum(t,n);
 }
 
-int MemoSubsetSum(int t, int n, vector<int> data, vector< vector<int> > &S){
-    cout<<"Target: "<<t<<" Max: "<<n<<endl;
-    for (std::vector<int>::const_iterator i = data.begin(); i != data.end(); ++i){
-        std::cout << *i << ' ';
+int RecSubsetSum(int t, int n){
+    // return 1 if target value is reached
+    if(t==0){
+        S[t*length+n] = 1;
+    } else if(n<=0) {       // return 0 if max value is 0 or less
+        S[t*length+n] = 0;
+    }else if(S[t*length+n] == 0){   // calculate subsum value and store into array if current value in array is 0
+        for(int i=0; i<= entries[n]; i++){
+            // break if exceeds target value
+            if(t-i*n < 0) break;
+            // calculate sub sum recursively and store in array
+            S[t*length+n] += RecSubsetSum(t-i*n, n-1);
+        }
     }
-    cout<<endl;
-    //return value stored in S if the cell is already filled int
-    if(S[t][n] != -1){
-        cout<<"Read directly from array!!!!!!!!!!!!!!!!!!!!!!!!!!"<<endl;
-        return S[t][n];
-    }
-    if(t == 0){
-        S[t][n] = 1;
-    }else if(n == 0){
-        S[t][n] = 0;
-    } else if(data[n]==0 || t<n){
-        S[t][n] = MemoSubsetSum(t,n-1, data, S);
-    } else{
-        vector<int> data1(data);
-        data1[n] = data[n]-1;
-        int  sum1 = MemoSubsetSum(t-n, n, data1, S);
-        int sum2 = MemoSubsetSum(t, n-1, data, S);
-        S[t][n] = sum1+sum2;
-    }
-    return S[t][n];
+    // return value of array
+    return S[t*length+n];
 }
