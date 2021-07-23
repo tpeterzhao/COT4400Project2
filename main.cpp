@@ -14,6 +14,7 @@ int length;
 int main(){
     string line;
     ifstream f("input.txt");
+    ofstream of("output.txt");
     if(f.is_open()){
         // read first line of file
         getline(f, line);
@@ -26,14 +27,13 @@ int main(){
             stringstream ss(line);
             ss>>target;
             ss>>max;
-            cout<<"Target: "<<target<<" Max: "<<max<<endl;
             length = max+1;
             // read data of each instance
             entries = new int[max+1];
             for(int i=1; i<=max; i++){
                 ss>>entries[i];
             }
-            cout<<SubsetSum(target,max)<<endl;
+            of<<SubsetSum(target,max)<<endl;
         }
     } else{
         cout<<"File can not be opened."<<endl;
